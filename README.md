@@ -27,4 +27,8 @@ The application will be available at http://localhost:5000.To run with TLS (HTTP
 TLS_CERT_PATH=certs/your_cert_file.pem
 TLS_KEY_PATH=certs/your_key_file.key
 Start the application:python3 web_api_client.py
-The application will be available at https://localhost:5000.Option 2: Docker ModeThis is the recommended method for consistent deployment.A. Configure for DockerThe docker-compose.yml file is already set up to use the configuration files.To run without TLS (HTTP):Ensure the env_file is present with your API credentials. No certs directory is needed.To run with TLS (HTTPS):Create the certs directory and place your certificate and key files inside it.Create the
+The application will be available at https://localhost:5000.Option 2: Docker ModeThis is the recommended method for consistent deployment.A. Configure for DockerThe docker-compose.yml file is already set up to use the configuration files.To run without TLS (HTTP):Ensure the env_file is present with your API credentials. No certs directory is needed.To run with TLS (HTTPS):Create the certs directory and place your certificate and key files inside it.Create the .env file with the TLS_CERT_PATH and TLS_KEY_PATH variables, pointing to the paths inside the container:# .env file
+TLS_CERT_PATH=/certs/your_cert_file.pem
+TLS_KEY_PATH=/certs/your_key_file.key
+B. Build and Run the ContainerExecute the following command from the project's root directory:docker-compose up --build
+Docker will build the image, install dependencies, and start the application. You can access it in your browser at http://localhost:5000 or https://localhost:5000 depending on your TLS setup.
