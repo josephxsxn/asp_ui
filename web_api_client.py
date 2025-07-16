@@ -12,8 +12,8 @@
 #    TLS certificate and key:
 #
 #    # .env file content
-#    TLS_CERT_PATH=/path/to/your/certificate.pem
-#    TLS_KEY_PATH=/path/to/your/private.key
+#    TLS_CERT_PATH=certs/your_cert_file.pem
+#    TLS_KEY_PATH=certs/your_key_file.key
 #
 # How to Run:
 # 1. Save this code as a Python file (e.g., web_api_client.py).
@@ -26,7 +26,7 @@ import json
 import requests
 from requests.auth import HTTPDigestAuth
 from flask import Flask, request, jsonify, render_template_string
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 
 # --- Flask App Initialization ---
 app = Flask(__name__)
@@ -1129,7 +1129,14 @@ def list_spis():
 # --- Main Execution Block ---
 
 if __name__ == '__main__':
-    load_dotenv()
+    # Explicitly find and load the .env file from the current directory
+    env_path = find_dotenv(usecwd=True)
+    if env_path:
+        print(f"Found .env file at: {env_path}")
+        load_dotenv(dotenv_path=env_path)
+    else:
+        print("No .env file found. TLS will be disabled.")
+
     tls_cert_path = os.getenv('TLS_CERT_PATH')
     tls_key_path = os.getenv('TLS_KEY_PATH')
 
@@ -1138,6 +1145,8 @@ if __name__ == '__main__':
         # Start with TLS (HTTPS)
         ssl_context = (tls_cert_path, tls_key_path)
         print("TLS certificate and key found. Starting secure Flask server (HTTPS)...")
+        print(f"  - Certificate: {tls_cert_path}")
+        print(f"  - Key: {tls_key_path}")
         print("Access the application at: https://localhost:5000")
         app.run(host='0.0.0.0', port=5000, ssl_context=ssl_context, debug=False)
     else:
