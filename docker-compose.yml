@@ -1,0 +1,30 @@
+# Specifies the Docker Compose file format version.
+version: '3.8'
+
+# Defines the services (containers) that make up your app.
+services:
+  # The name of our service.
+  atlas-api-gui:
+    # Tells Docker Compose to build the image from the Dockerfile in the current directory.
+    build: .
+    # Names the container for easier reference.
+    container_name: atlas_api_gui_container
+    # Maps port 5000 on the host machine to port 5000 in the container.
+    # This lets you access the app via http://localhost:5000 or https://localhost:5000.
+    ports:
+      - "5000:5000"
+    # Defines volumes to mount into the container. This is useful for providing
+    # configuration or certificate files without rebuilding the image.
+    volumes:
+      # Mounts the .env file from the host into the container.
+      # This allows the Flask app to access the TLS_CERT_PATH and TLS_KEY_PATH variables.
+      # The file is mounted as read-only for security.
+      - ./env_file:/app/.env:ro
+      # Mounts the directory containing your TLS certificates.
+      # This assumes your certificates are in a 'certs' subdirectory on the host.
+      # The Python script will look for the certs at the path specified in the .env file.
+      # For example, if your .env file has TLS_CERT_PATH=/certs/mycert.pem,
+      # this volume mount makes that file available inside the container.
+      - ./certs:/certs:ro
+
+

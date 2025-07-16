@@ -1,0 +1,28 @@
+# --- Security ---
+# Ignore the directory containing TLS certificates and keys.
+# This is critical to prevent secrets from being committed to the repository.
+/certs/
+
+# Ignore the environment file that contains paths to the certificates.
+/env_file
+
+# --- Python ---
+# Ignore Python bytecode files
+*.pyc
+
+# Ignore Python cache directories
+__pycache__/
+
+# Ignore virtual environment directories
+# Common names include venv, .venv, env, .env
+venv/
+.venv/
+env/
+.env/
+
+# --- IDE/Editor ---
+# Ignore common IDE/editor-specific directories
+.idea/
+.vscode/
+
+
