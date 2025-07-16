@@ -20,7 +20,7 @@ This web application provides a user-friendly interface to manage MongoDB Atlas 
 
 Before you begin, ensure you have the following software installed on your system:
 
-* **Git**: To clone the repository.
+* **Git** & **GitHub CLI**: To clone the repository.
 * **Python 3.8+** and **pip**: For running the application in standalone mode.
 * **Docker** & **Docker Compose**: For running the application in a container.
 
@@ -33,18 +33,18 @@ Follow these steps to set up the project locally.
 ### 1. Clone the Repository
 
 ```bash
-git clone <your-repository-url>
-cd <your-repository-folder>
+gh repo clone josephxsxn/asp_ui
+cd asp_ui
 ```
 
-### 2. Create the Configuration File
+### 2. Prepare Your API Key File
 
-The application requires a configuration file to store your API credentials. Create a file named `env_file` in the root of the project directory.
+This application loads your Atlas API credentials from a local file via the web UI. You need to create this file **somewhere on your computer** (it does not need to be inside the project folder).
 
-Paste the following content into the `env_file`, replacing the placeholder values with your actual credentials.
+Create a plain text file (e.g., `my_atlas_keys.txt`) with the following format, replacing the placeholder values with your actual credentials.
 
 ```
-# env_file
+# my_atlas_keys.txt
 
 # Your MongoDB Atlas API Public Key
 public_key=your-public-key
@@ -62,7 +62,7 @@ spi_name=your-instance-name
 api_host=cloud.mongodb.com
 ```
 
-**Note:** This file is included in `.gitignore` and will not be committed to your repository.
+You will use the "Load Config from File or Text" button in the web UI to load this file.
 
 ---
 
@@ -99,8 +99,7 @@ pip install -r requirements.txt
 Now, you can start the Flask server.
 
 **To run without TLS (HTTP):**
-
-Make sure you do **not** have a `certs` directory or the `TLS_CERT_PATH` and `TLS_KEY_PATH` variables in your `.env` file.
+This is the simplest method for local use.
 
 ```bash
 python3 web_api_client.py
@@ -109,21 +108,20 @@ python3 web_api_client.py
 The application will be available at `http://localhost:5000`.
 
 **To run with TLS (HTTPS):**
+This is optional and only needed if you require a secure connection.
 
-1.  Create a directory named `certs` in the project root.
-2.  Place your TLS certificate (`.pem`) and private key (`.key`) files inside the `certs` directory.
-3.  Create a file named `.env` (this is separate from `env_file`) and add the paths to your certificate and key:
-
-    ```
-    # .env file
-    TLS_CERT_PATH=certs/your_cert_file.pem
-    TLS_KEY_PATH=certs/your_key_file.key
-    ```
-4.  Start the application:
-
-    ```bash
-    python3 web_api_client.py
-    ```
+1. Create a directory named `certs` in the project root.
+2. Place your TLS certificate (`.pem`) and private key (`.key`) files inside the `certs` directory.
+3. Create a file named `.env` in the project root. This file is **only** for the server's TLS certificate paths.
+   ```
+   # .env file
+   TLS_CERT_PATH=certs/your_cert_file.pem
+   TLS_KEY_PATH=certs/your_key_file.key
+   ```
+4. Start the application:
+   ```bash
+   python3 web_api_client.py
+   ```
 
 The application will be available at `https://localhost:5000`.
 
@@ -135,22 +133,18 @@ This is the recommended method for consistent deployment.
 
 #### A. Configure for Docker
 
-The `docker-compose.yml` file is already set up to use the configuration files.
-
 **To run without TLS (HTTP):**
-
-Ensure the `env_file` is present with your API credentials. No `certs` directory is needed.
+No extra files are needed. The application will start and serve over HTTP.
 
 **To run with TLS (HTTPS):**
 
-1.  Create the `certs` directory and place your certificate and key files inside it.
-2.  Create the `.env` file with the `TLS_CERT_PATH` and `TLS_KEY_PATH` variables, pointing to the paths *inside the container*:
-
-    ```
-    # .env file
-    TLS_CERT_PATH=/certs/your_cert_file.pem
-    TLS_KEY_PATH=/certs/your_key_file.key
-    ```
+1. Create the `certs` directory and place your certificate and key files inside it.
+2. Create the `.env` file with the `TLS_CERT_PATH` and `TLS_KEY_PATH` variables. These paths must point to where the files will be *inside the container*, as defined in `docker-compose.yml`.
+   ```
+   # .env file
+   TLS_CERT_PATH=/certs/your_cert_file.pem
+   TLS_KEY_PATH=/certs/your_key_file.key
+   ```
 
 #### B. Build and Run the Container
 
