@@ -1,7 +1,9 @@
 # --- Security ---
-# Ignore the directory containing TLS certificates and keys.
-# This is critical to prevent secrets from being committed to the repository.
-/certs/
+# Ignore all files inside the certs directory...
+/certs/*
+
+# ...but DO NOT ignore the .gitkeep file. This forces Git to track the directory.
+!/certs/.gitkeep
 
 # Ignore the environment file that contains paths to the certificates.
 /env_file
